@@ -21,13 +21,10 @@ WORKDIR /app
 
 RUN echo "OpenCV: ${OPENCV_VERSION}" && \
   echo "Dlib: ${DLIB_VERSION}" && \
-  # rm -rf /usr/local/lib && \
-  # ln -s /usr/local/lib64 /usr/local/lib && \
   apk add -u --no-cache $RUNTIME_DEPS && \
   apk add -u --no-cache --virtual .build-dependencies $BUILD_DEPS && \
-  pip install numpy
-
-RUN \
+  ## python
+  pip install -U numpy pip && \
   # Build OpenCV
   cd /tmp && \
   wget -q https://github.com/Itseez/opencv/archive/${OPENCV_VERSION}.zip -O opencv.zip && \
@@ -83,51 +80,7 @@ RUN \
   cd .. && \
   python setup.py install && \
   cp *.txt $LIB_PREFIX/include/dlib/ && \
-  ## python
-  # pip install -U pip poetry && \
-  # poetry config settings.virtualenvs.create false && \
-  # ## celan up
-  # ldconfig && \
-  # apk del .build-dependencies && \
-  # cd / && rm -rf /var/cache/apk/* /usr/share/man /usr/local/share/man /tmp/*
-  echo 'yattaze'
-
-COPY pyproject.toml poetry.lock ./
-RUN \
-  pip install -U poetry && \
-  poetry config settings.virtualenvs.create false 
-#  poetry install --no-dev --no-interaction --no-ansi
-
-# RUN \
-#   apk del .build-dependencies && \
-#   cd / && rm -rf /var/cache/apk/* /usr/share/man /usr/local/share/man /tmp/*
-
-# COPY pyproject.toml poetry.lock ./
-# RUN poetry install --no-dev --no-interaction --no-ansi
-
-# COPY blkct/setup.py blkct/
-# COPY setup.py ./
-
-# RUN # apk --update add libxml2 && \
-#   apk --virtual .build-deps add build-base cmake wget unzip cmake build-base linux-headers libpng-dev libjpeg-turbo-dev giflib-dev openblas-dev libx11-dev && \
-#   pip install -U pip poetry && \
-#   poetry config settings.virtualenvs.create false && \
-#   poetry install --no-dev --no-interaction --no-ansi  && \
-#   apk del --purge .build-deps
-
-# COPY ./blkct ./blkct
-# COPY ./ot ./ot
-
-# ENV AWS_DEFAULT_REGION ap-northeast-1
-# ENV BLKCT_CONTENT_STORE s3
-# ENV BLKCT_CONTEXT_STORE dynamodb
-# ENV BLKCT_SCHEDULER awsbatch
-
-# ENV BLKCT_DYNAMODB_TABLE_NAME ot-context-debug
-# ENV BLKCT_S3_CONTENT_BUCKET oppaitokyo-crawler
-# ENV BLKCT_S3_CONTENT_PREFIX debug/
-# ENV BLKCT_AWSBATCH_JOB_DEFINITION OTCrawlerJob
-# ENV BLKCT_AWSBATCH_JOB_QUEUE OTCrawlerJobs
-# ENV BLKCT_MODULES ot.crawler
-
-ENTRYPOINT ["/bin/sh"]
+  ## celan up
+  ldconfig && \
+  apk del .build-dependencies && \
+  cd / && rm -rf /var/cache/apk/* /usr/share/man /usr/local/share/man /tmp/*
