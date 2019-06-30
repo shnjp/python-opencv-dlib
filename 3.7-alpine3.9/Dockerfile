@@ -76,11 +76,10 @@ RUN echo "OpenCV: ${OPENCV_VERSION}" && \
     -D DLIB_USE_CUDA=OFF \
     .. && \
   make -j $(getconf _NPROCESSORS_ONLN) && \
+  cd /tmp/dlib/build && \
   make install && \
   cd .. && \
   python setup.py install && \
-  cp *.txt $LIB_PREFIX/include/dlib/ && \
-  ## celan up
-  ldconfig && \
+  ## clean up
   apk del .build-dependencies && \
   cd / && rm -rf /var/cache/apk/* /usr/share/man /usr/local/share/man /tmp/*
